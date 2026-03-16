@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sonor AI Pipeline</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f1117;color:#e1e4e8;min-height:100vh}
+.hdr{background:#161b22;border-bottom:1px solid #30363d;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.hdr h1{font-size:18px;font-weight:600;color:#f0f6fc}
+.hdr h1 b{color:#58a6ff}
+.ri{font-size:12px;color:#8b949e}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.dg{background:#3fb950}.dr{background:#f85149}
+.ctn{max-width:1200px;margin:0 auto;padding:20px}
+.cb{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.cc{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:16px 24px;display:flex;align-items:center;gap:16px;flex:1;min-width:220px;transition:border-color .3s}
+.cc.on{border-color:#3fb950}
+.cl{font-size:14px;font-weight:500}
+.csu{font-size:11px;color:#8b949e;margin-top:2px}
+.tg{position:relative;width:52px;height:28px;flex-shrink:0}
+.tg input{opacity:0;width:0;height:0}
+.tg .sl{position:absolute;cursor:pointer;inset:0;background:#30363d;border-radius:28px;transition:.3s}
+.tg .sl:before{content:'';position:absolute;height:22px;width:22px;left:3px;bottom:3px;background:#8b949e;border-radius:50%;transition:.3s}
+.tg input:checked+.sl{background:#238636}
+.tg input:checked+.sl:before{transform:translateX(24px);background:#fff}
+.tg input:disabled+.sl{opacity:.5;cursor:wait}
+.gr{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;margin-bottom:20px}
+.cd{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:16px}
+.ct2{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#8b949e;margin-bottom:12px}
+.sr{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.st{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:12px 16px;text-align:center;flex:1;min-width:100px}
+.sv{font-size:28px;font-weight:700;color:#f0f6fc}
+.sla{font-size:11px;color:#8b949e;margin-top:4px}
+.fr{display:flex;align-items:center;margin-bottom:6px;font-size:13px}
+.fl{width:140px;color:#8b949e;flex-shrink:0}
+.fc{width:40px;text-align:right;margin-right:10px;font-weight:600;flex-shrink:0}
+.fb{height:20px;border-radius:4px;min-width:2px;transition:width .5s}
+.bg{background:#238636}.by{background:#9e6a03}.bre{background:#da3633}.bx{background:#30363d}
+.qi{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #21262d;font-size:13px}
+.qi:last-child{border-bottom:none}
+.bd{padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600}
+.bw{background:#9e6a0333;color:#d29922}.bz{background:#21262d;color:#8b949e}
+.crw{display:flex;align-items:center;padding:8px 0;border-bottom:1px solid #21262d;font-size:13px}
+.crw:last-child{border-bottom:none}
+.cp{width:80px;font-weight:600;text-transform:capitalize}
+.cw{flex:1;margin:0 12px;height:6px;background:#21262d;border-radius:3px;overflow:hidden}
+.cf{height:100%;border-radius:3px;transition:width .5s}
+.cn{width:60px;text-align:right;font-size:12px;color:#8b949e}
+.ai{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid #21262d;font-size:12px}
+.ai:last-child{border-bottom:none}
+.at2{color:#8b949e;width:40px;flex-shrink:0;text-align:right}
+.aa{color:#58a6ff;width:200px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.asu{color:#8b949e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ti{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #21262d;font-size:13px}
+.ti:last-child{border-bottom:none}
+.ts{padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:#9e6a0333;color:#d29922}
+.tn{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tt{color:#8b949e;font-size:12px}
+.tk{color:#f85149;font-weight:600}
+.em{color:#484f58;font-size:13px;font-style:italic;padding:8px 0}
+.fw{grid-column:1/-1}
+.hb{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:10px 16px;margin-bottom:16px;font-size:12px;color:#8b949e;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.hb b{color:#58a6ff;font-weight:500}
+@media(max-width:768px){.cb{flex-direction:column}.gr{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <h1><b>Sonor AI</b> Pipeline</h1>
+  <div class="ri"><span class="dot dg" id="dot"></span><span id="upd">Loading...</span></div>
+</div>
+<div class="ctn">
+  <div class="cb" id="ctrls"></div>
+  <div class="sr" id="stats"></div>
+  <div class="hb" id="hb" style="display:none"></div>
+  <div class="gr">
+    <div class="cd"><div class="ct2">Pipeline Funnel</div><div id="fun"></div></div>
+    <div class="cd"><div class="ct2">Queue Depth</div><div id="que"></div></div>
+    <div class="cd"><div class="ct2">API Credits</div><div id="crd"></div></div>
+    <div class="cd"><div class="ct2">Active Tasks</div><div id="tsk"></div></div>
+    <div class="cd fw"><div class="ct2">Recent Activity</div><div id="act"></div></div>
+  </div>
+</div>
+<script>
+var API = "https://qcslipdgzgnmojspjzyn.supabase.co/functions/v1/pipeline-dashboard";
+var G = function(id){ return document.getElementById(id); };
+
+function api(body){
+  return fetch(API, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(body)
+  }).then(function(r){ return r.json(); });
+}
+
+document.addEventListener("change", function(e){
+  var inp = e.target;
+  if(inp.tagName === "INPUT" && inp.dataset.ctrl){
+    inp.disabled = true;
+    api({action:"toggle", name:inp.dataset.ctrl, enabled:inp.checked})
+      .then(function(){ return load(); })
+      .then(function(){ inp.disabled = false; });
+  }
+});
+
+function ucfirst(s){
+  return s.replace(/_/g," ").split(" ").map(function(w){
+    return w.charAt(0).toUpperCase() + w.slice(1);
+  }).join(" ");
+}
+
+function render(d){
+  var defs = {
+    scraping: "Dispatch scrapes, poll Apify, process results",
+    enrichment: "ICP check, enrich, post-enrich chain",
+    deep_research: "Deep research for personalization"
+  };
+
+  var h = "";
+  var controls = d.controls || [];
+  if(!Array.isArray(controls)) controls = [];
+  controls.forEach(function(c){
+    h += '<div class="cc' + (c.enabled ? ' on' : '') + '">';
+    h += '<label class="tg"><input type="checkbox" data-ctrl="' + c.name + '"' + (c.enabled ? ' checked' : '') + '><span class="sl"></span></label>';
+    h += '<div><div class="cl">' + ucfirst(c.name) + '</div>';
+    h += '<div class="csu">' + (defs[c.name] || '') + '</div></div></div>';
+  });
+  G("ctrls").innerHTML = h;
+
+  var t = d.totals || {}, s = d.scrapes || {};
+  G("stats").innerHTML = [
+    ["Companies", t.companies], ["Leads", t.leads],
+    ["Scrapes Done", s.done || s.completed], ["Pending", s.pending]
+  ].map(function(x){
+    return '<div class="st"><div class="sv">' + (x[1]||0) + '</div><div class="sla">' + x[0] + '</div></div>';
+  }).join("");
+
+  var f = d.funnel || {};
+  var ord = ["not_enriched","icp_checking","icp_failed","enriching","processing","enriched","deep_researching","no_email_found","invalid_email","disqualified"];
+  var col = {enriched:"bg",enriching:"by",icp_checking:"by",processing:"by",deep_researching:"by",icp_failed:"bre",no_email_found:"bre",invalid_email:"bre",disqualified:"bre"};
+  var vals = ord.map(function(k){ return f[k]||0; });
+  var mx = Math.max.apply(null, vals.concat([1]));
+  var fh = "";
+  ord.forEach(function(k){
+    if(f[k] > 0){
+      fh += '<div class="fr"><span class="fl">' + k.replace(/_/g," ") + '</span>';
+      fh += '<span class="fc">' + f[k] + '</span>';
+      fh += '<div class="fb ' + (col[k]||"bx") + '" style="width:' + Math.max(f[k]/mx*100,2) + '%"></div></div>';
+    }
+  });
+  G("fun").innerHTML = fh || '<div class="em">No data</div>';
+
+  var q = d.queue || {};
+  var qh = "";
+  Object.keys(q).forEach(function(k){
+    qh += '<div class="qi"><span>' + ucfirst(k.replace("awaiting_","")) + '</span>';
+    qh += '<span class="bd ' + (q[k]>0?"bw":"bz") + '">' + q[k] + '</span></div>';
+  });
+  G("que").innerHTML = qh;
+
+  var cr = d.api_credits || d.credits || {};
+  var providers = Object.keys(cr).sort();
+  var mxc = 1;
+  providers.forEach(function(p){
+    var c = cr[p].total_credits_remaining || cr[p].credits || 0;
+    if(c > mxc) mxc = c;
+  });
+  var ch = "";
+  providers.forEach(function(p){
+    var i = cr[p];
+    var credits = i.total_credits_remaining || i.credits || 0;
+    var pct = Math.max(credits/mxc*100, 1);
+    var active = i.active || 0;
+    var depleted = i.depleted || 0;
+    var clr = active > 0 ? "#238636" : depleted > 0 ? "#da3633" : "#9e6a03";
+    ch += '<div class="crw"><span class="cp">' + p + '</span>';
+    ch += '<div class="cw"><div class="cf" style="width:' + pct + '%;background:' + clr + '"></div></div>';
+    ch += '<span class="cn">' + active + ' ok</span></div>';
+  });
+  G("crd").innerHTML = ch || '<div class="em">No accounts</div>';
+
+  var tk = d.active_tasks || d.tasks || [];
+  G("tsk").innerHTML = tk.length ? tk.map(function(t){
+    var mins = t.running_for_minutes || t.minutes || 0;
+    var stuck = mins > 15;
+    return '<div class="ti"><span class="ts">' + t.status + '</span><span class="tn">' + t.company + '</span><span class="tt' + (stuck?" tk":"") + '">' + mins + 'm' + (stuck?" STUCK":"") + '</span></div>';
+  }).join("") : '<div class="em">No active tasks</div>';
+
+  var ac = d.recent_activity || d.logs || [];
+  G("act").innerHTML = ac.length ? ac.slice(0,20).map(function(a){
+    var sum = a.summary || "";
+    if(!sum && a.details){
+      var det = a.details;
+      sum = det.company_name || det.count || "";
+    }
+    return '<div class="ai"><span class="at2">' + a.ago + '</span><span class="aa">' + a.action + '</span><span class="asu">' + sum + '</span></div>';
+  }).join("") : '<div class="em">No activity</div>';
+
+  var hc = d.last_health_check || d.health;
+  if(hc){
+    G("hb").style.display = "flex";
+    G("hb").innerHTML = '<span>Last check: <b>' + hc.ago + '</b></span><span>stuck=' + (hc.stuck_reset||hc.stuck_tasks_reset||0) + ' icp=' + (hc.icp_queued||0) + ' enrich=' + (hc.enrichments_queued||0) + ' scrape=' + (hc.scrapes_dispatched||0) + '</span>';
+  }
+}
+
+function load(){
+  api({action:"status"}).then(function(d){
+    render(d);
+    G("dot").className = "dot dg";
+    G("upd").textContent = "Updated " + new Date().toLocaleTimeString();
+  }).catch(function(e){
+    G("dot").className = "dot dr";
+    G("upd").textContent = "Error: " + e.message;
+  });
+}
+
+load();
+setInterval(load, 30000);
+</script>
+</body>
+</html>
